@@ -9,6 +9,7 @@ import vn.edu.iuh.fit.models.Product;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ProductRepository {
     private EntityManager em;
@@ -31,5 +32,15 @@ public class ProductRepository {
         }
 
         return new ArrayList<>();
+    }
+
+    public Optional<Product> findById(long id) {
+        try {
+            return Optional.of(em.find(Product.class, id));
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+
+        return Optional.empty();
     }
 }
