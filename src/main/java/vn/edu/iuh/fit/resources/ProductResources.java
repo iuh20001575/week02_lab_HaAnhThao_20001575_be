@@ -33,4 +33,43 @@ public class ProductResources {
 
         return Response.ok(product.get()).build();
     }
+
+    @POST
+    @Consumes("application/json")
+    public Response add(Product product) {
+        boolean b = productServices.add(product);
+
+        if (b)
+            return Response.status(Response.Status.CREATED).build();
+
+        return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+
+    @PUT
+    @Consumes("application/json")
+    public Response update(Product product) {
+        Optional<Boolean> update = productServices.update(product);
+
+        if (update.isEmpty())
+            return Response.status(Response.Status.NOT_FOUND).build();
+
+        if (update.get())
+            return Response.ok().build();
+
+        return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+
+    @DELETE
+    @Path("/{id}")
+    public Response delete(@PathParam("id") long id) {
+        Optional<Boolean> b = productServices.delete(id);
+
+        if (b.isEmpty())
+            return Response.status(Response.Status.NOT_FOUND).build();
+
+        if (b.get())
+            return Response.noContent().build();
+
+        return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+    }
 }

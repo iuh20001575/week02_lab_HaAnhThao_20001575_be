@@ -11,7 +11,8 @@ import java.util.List;
 @Entity
 @Table(name = "product")
 @NamedQueries({
-        @NamedQuery(name = "Product.getAll", query = "FROM Product ORDER BY id")
+        @NamedQuery(name = "Product.getAll", query = "FROM Product ORDER BY id"),
+        @NamedQuery(name = "Product.updateStatus", query = "UPDATE Product SET status = :status WHERE product_id = :product_id")
 })
 @XmlRootElement
 public class Product {

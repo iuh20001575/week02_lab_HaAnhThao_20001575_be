@@ -5,6 +5,7 @@ import jakarta.persistence.EntityTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vn.edu.iuh.fit.db.Connection;
+import vn.edu.iuh.fit.enums.ProductStatus;
 import vn.edu.iuh.fit.models.Product;
 
 import java.util.ArrayList;
@@ -42,5 +43,50 @@ public class ProductRepository {
         }
 
         return Optional.empty();
+    }
+
+    public boolean add(Product product) {
+        try {
+            transaction.begin();
+            em.persist(product);
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            transaction.rollback();
+            logger.error(e.getMessage());
+        }
+
+        return false;
+    }
+
+    public boolean update(Product product) {
+        try {
+            transaction.begin();
+            em.merge(product);
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            transaction.rollback();
+            logger.error(e.getMessage());
+        }
+
+        return false;
+    }
+
+    public boolean updateStatus(long id, ProductStatus status) {
+        try {
+            transaction.begin();
+            int numberUpdate = em.createNamedQuery("Product.updateStatus")
+                    .setParameter("status", status)
+                    .setParameter("product_id", id)
+                    .executeUpdate();
+            transaction.commit();
+            return numberUpdate > 0;
+        } catch (Exception e) {
+            transaction.rollback();
+            logger.error(e.getMessage());
+        }
+
+        return false;
     }
 }

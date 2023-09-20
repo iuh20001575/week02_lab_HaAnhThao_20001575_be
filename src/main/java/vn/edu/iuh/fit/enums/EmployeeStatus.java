@@ -1,5 +1,7 @@
 package vn.edu.iuh.fit.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum EmployeeStatus {
     WORKING(1), UN_WORKING(0), QUITTED(-1);
 
@@ -9,6 +11,7 @@ public enum EmployeeStatus {
         this.status = status;
     }
 
+    @JsonValue
     public int getStatus() {
         return status;
     }

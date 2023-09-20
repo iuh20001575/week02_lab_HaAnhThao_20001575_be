@@ -1,5 +1,7 @@
 package vn.edu.iuh.fit.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum ProductStatus {
     ACTIVE(1), INACTIVE(0), DISCONTINUED(-1);
 
@@ -9,6 +11,7 @@ public enum ProductStatus {
         this.status = status;
     }
 
+    @JsonValue
     public int getStatus() {
         return status;
     }
