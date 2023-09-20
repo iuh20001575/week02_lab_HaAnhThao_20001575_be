@@ -16,8 +16,8 @@ public class ProductPrice {
     private String note;
     @Column(columnDefinition = "DOUBLE", nullable = false)
     private double price;
-
-    @OneToOne
+    @Id
+    @ManyToOne
     @JoinColumn(name = "product_id", referencedColumnName = "product_id")
     private Product product;
 }

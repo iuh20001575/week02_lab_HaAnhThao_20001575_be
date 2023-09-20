@@ -2,6 +2,7 @@ package vn.edu.iuh.fit.models;
 
 import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.*;
+import vn.edu.iuh.fit.converters.EmployeeStatusConverter;
 import vn.edu.iuh.fit.enums.EmployeeStatus;
 
 import java.time.LocalDateTime;
@@ -26,7 +27,7 @@ public class Employee {
     @Column(columnDefinition = "VARCHAR(15)", nullable = false)
     private String phone;
     @Column(columnDefinition = "INT(11)", nullable = false)
-    @Enumerated(EnumType.ORDINAL)
+    @Convert(converter = EmployeeStatusConverter.class)
     private EmployeeStatus status;
 
     @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)

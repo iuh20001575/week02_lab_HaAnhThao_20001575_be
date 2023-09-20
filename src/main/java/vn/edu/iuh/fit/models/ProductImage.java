@@ -1,9 +1,11 @@
 package vn.edu.iuh.fit.models;
 
 import jakarta.persistence.*;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @Table(name = "product_image")
+@XmlRootElement
 public class ProductImage {
     @Id
     @Column(columnDefinition = "BIGINT(20)")

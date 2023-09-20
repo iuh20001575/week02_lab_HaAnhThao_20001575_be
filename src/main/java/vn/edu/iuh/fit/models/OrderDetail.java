@@ -1,9 +1,11 @@
 package vn.edu.iuh.fit.models;
 
 import jakarta.persistence.*;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @Table(name = "order_detail")
+@XmlRootElement
 public class OrderDetail {
     @Column(columnDefinition = "DOUBLE", nullable = false)
     private double price;

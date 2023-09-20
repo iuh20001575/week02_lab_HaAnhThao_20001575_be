@@ -1,6 +1,8 @@
 package vn.edu.iuh.fit.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import vn.edu.iuh.fit.converters.ProductStatusConverter;
 import vn.edu.iuh.fit.enums.ProductStatus;
 
@@ -8,6 +10,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "product")
+@NamedQueries({
+        @NamedQuery(name = "Product.getAll", query = "FROM Product ORDER BY id")
+})
+@XmlRootElement
 public class Product {
     @Id
     @Column(columnDefinition = "BIGINT(20)")
@@ -27,7 +33,7 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     private List<ProductImage> productImageList;
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private List<OrderDetail> orderDetails;
 
     public Product() {
@@ -39,5 +45,82 @@ public class Product {
         this.name = name;
         this.status = status;
         this.unit = unit;
+    }
+
+    public long getProduct_id() {
+        return product_id;
+    }
+
+    private void setProduct_id(long product_id) {
+        this.product_id = product_id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ProductStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ProductStatus status) {
+        this.status = status;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public List<ProductImage> getProductImageList() {
+        return productImageList;
+    }
+
+    public void setProductImageList(List<ProductImage> productImageList) {
+        this.productImageList = productImageList;
+    }
+
+    @JsonIgnore
+    public List<OrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(List<OrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "product_id=" + product_id +
+                ", description='" + description + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", name='" + name + '\'' +
+                ", status=" + status +
+                ", unit='" + unit + '\'' +
+                '}';
     }
 }
