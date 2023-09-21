@@ -8,7 +8,7 @@ import jakarta.ws.rs.ext.Provider;
 
 @Provider
 public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper> {
-    ObjectMapper mapper = new ObjectMapper();
+    final ObjectMapper mapper = new ObjectMapper();
 
     public ObjectMapperContextResolver() {
         mapper.registerModule(new JavaTimeModule());
