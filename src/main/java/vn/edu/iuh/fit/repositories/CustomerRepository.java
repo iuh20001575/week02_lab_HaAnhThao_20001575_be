@@ -1,31 +1,22 @@
 package vn.edu.iuh.fit.repositories;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import vn.edu.iuh.fit.db.Connection;
 import vn.edu.iuh.fit.models.Customer;
-import vn.edu.iuh.fit.models.Employee;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class CustomerRepository {
-    private final EntityManager em;
-    private final EntityTransaction transaction;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
-
+public class CustomerRepository extends CRUDRepository<Customer> {
     public CustomerRepository() {
-        em = Connection.getInstance().getEntityManager();
-        transaction = em.getTransaction();
+        super();
+        logger = LoggerFactory.getLogger(this.getClass().getName());
     }
 
     public List<Customer> getAll(int page) {
         try {
             return em.createNamedQuery("Customer.getAll", Customer.class)
-                    .setFirstResult((page-1) * 20)
+                    .setFirstResult((page - 1) * 20)
                     .setMaxResults(20)
                     .getResultList();
         } catch (Exception e) {
@@ -43,33 +34,5 @@ public class CustomerRepository {
         }
 
         return Optional.empty();
-    }
-
-    public boolean add(Customer customer) {
-        try {
-            transaction.begin();
-            em.persist(customer);
-            transaction.commit();
-            return true;
-        } catch (Exception e) {
-            transaction.rollback();
-            logger.error(e.getMessage());
-        }
-
-        return false;
-    }
-
-    public boolean update(Customer customer) {
-        try {
-            transaction.begin();
-            em.merge(customer);
-            transaction.commit();
-            return true;
-        } catch (Exception e) {
-            transaction.rollback();
-            logger.error(e.getMessage());
-        }
-
-        return false;
     }
 }
