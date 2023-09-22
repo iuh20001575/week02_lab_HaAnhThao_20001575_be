@@ -1,6 +1,7 @@
 package vn.edu.iuh.fit.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import vn.edu.iuh.fit.converters.ProductStatusConverter;
@@ -8,6 +9,7 @@ import vn.edu.iuh.fit.enums.ProductStatus;
 
 import java.util.List;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 @Entity
 @Table(name = "product")
 @NamedQueries({
@@ -38,6 +40,10 @@ public class Product {
     private List<OrderDetail> orderDetails;
 
     public Product() {
+    }
+
+    public Product(long product_id) {
+        this.product_id = product_id;
     }
 
     public Product(String name, String description, String unit, String manufacturer, ProductStatus status) {

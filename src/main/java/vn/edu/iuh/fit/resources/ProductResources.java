@@ -4,6 +4,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import vn.edu.iuh.fit.models.Product;
+import vn.edu.iuh.fit.services.ProductImageServices;
 import vn.edu.iuh.fit.services.ProductServices;
 
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.Optional;
 public class ProductResources {
     @Inject
     private ProductServices productServices;
+    @Inject
+    private ProductImageServices productImageServices;
 
     @GET
     @Produces("application/json")
@@ -32,6 +35,13 @@ public class ProductResources {
             return Response.status(Response.Status.NOT_FOUND).build();
 
         return Response.ok(product.get()).build();
+    }
+
+    @GET
+    @Path("/{id}/images")
+    @Produces("application/json")
+    public Response getImageByProductId(@PathParam("id") long id) {
+        return Response.ok(productImageServices.getByProductId(id)).build();
     }
 
     @POST
