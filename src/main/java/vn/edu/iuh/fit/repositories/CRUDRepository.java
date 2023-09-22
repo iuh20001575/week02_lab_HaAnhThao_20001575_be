@@ -3,13 +3,12 @@ package vn.edu.iuh.fit.repositories;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import vn.edu.iuh.fit.db.Connection;
 
 public abstract class CRUDRepository<T> {
     protected final EntityManager em;
     protected final EntityTransaction transaction;
-    protected Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    protected Logger logger;
 
     public CRUDRepository() {
         em = Connection.getInstance().getEntityManager();
