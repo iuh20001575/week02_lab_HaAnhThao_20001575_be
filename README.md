@@ -78,10 +78,11 @@ The API provides endpoints for basic CRUD operations on the mentioned entities u
 
 -   **Order Detail**
 
-    ~~- Create: `POST /api/order-details`~~
-    ~~- Read: `GET /api/order-details/{order_id}/{product_id}`~~
-    ~~- Update: `PUT /api/order-details/{order_id}/{product_id}`~~
-    ~~- Delete: `DELETE /api/order-details/{order_id}/{product_id}`~~
+    -   Read: `GET /api/order-details`
+    -   Read: `GET /api/order-details/{order-id}/{product-id}`
+    -   Create: `POST /api/order-details`
+    -   Update: `PUT /api/order-details/{order_id}/{product_id}`
+    -   ~~Delete: `DELETE /api/order-details/{order_id}/{product_id}`~~
 
 -   **Product Price**
 
