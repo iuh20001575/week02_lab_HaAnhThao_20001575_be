@@ -5,23 +5,19 @@ import jakarta.persistence.EntityTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vn.edu.iuh.fit.db.Connection;
-import vn.edu.iuh.fit.models.StatisticDate;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-public class StatisticDateRepository {
+public class StatisticRepository {
     private final EntityManager em;
     private final EntityTransaction transaction;
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    public StatisticDateRepository() {
+    public StatisticRepository() {
         em = Connection.getInstance().getEntityManager();
         transaction = em.getTransaction();
     }
@@ -52,6 +48,25 @@ public class StatisticDateRepository {
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
                         return LocalDateTime.parse(objects[0].toString(), formatter);
                     }, (Object[] objects) -> ((Number) objects[1]).intValue(), Integer::sum, TreeMap::new));
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+
+        return new TreeMap<>();
+    }
+
+    public Map<Long, Integer> statisticsByEmployee(LocalDateTime startDate, LocalDateTime endDate) {
+        try {
+            return (Map<Long, Integer>) em.createNamedQuery("Order.statisticsByEmployee")
+                    .setParameter(1, startDate)
+                    .setParameter(2, endDate)
+                    .getResultList()
+                    .parallelStream()
+                    .collect(Collectors.toMap(
+                            (Object[] objects) -> ((Number) objects[0]).longValue(),
+                            (Object[] objects) -> ((Number) objects[1]).intValue(),
+                            Integer::sum,
+                            TreeMap::new));
         } catch (Exception e) {
             logger.error(e.getMessage());
         }

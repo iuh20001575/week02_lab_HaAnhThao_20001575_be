@@ -11,6 +11,7 @@ import java.util.List;
         @NamedQuery(name = "Order.getAll", query = "FROM Order"),
         @NamedQuery(name = "Order.statisticsByDate", query = "SELECT orderDate, count(*) as count FROM Order GROUP BY orderDate ORDER BY orderDate"),
         @NamedQuery(name = "Order.statisticsByPeriod", query = "SELECT orderDate, count(*) as count FROM Order WHERE orderDate >= ?1 and orderDate <= ?2 GROUP BY orderDate ORDER BY orderDate"),
+        @NamedQuery(name = "Order.statisticsByEmployee", query = "SELECT employee.id, count(*) as count FROM Order WHERE orderDate >= ?1 and orderDate <= ?2 group by employee.id")
 })
 public class Order {
     @Id
