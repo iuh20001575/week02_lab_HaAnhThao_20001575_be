@@ -8,7 +8,9 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 @NamedQueries({
-        @NamedQuery(name = "Order.getAll", query = "FROM Order")
+        @NamedQuery(name = "Order.getAll", query = "FROM Order"),
+        @NamedQuery(name = "Order.statisticsByDate", query = "SELECT orderDate, count(*) as count FROM Order GROUP BY orderDate ORDER BY orderDate"),
+        @NamedQuery(name = "Order.statisticsByPeriod", query = "SELECT orderDate, count(*) as count FROM Order WHERE orderDate >= ?1 and orderDate <= ?2 GROUP BY orderDate ORDER BY orderDate"),
 })
 public class Order {
     @Id

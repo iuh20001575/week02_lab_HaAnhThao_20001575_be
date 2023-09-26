@@ -97,9 +97,9 @@ The API provides endpoints for basic CRUD operations on the mentioned entities u
 The API provides endpoints for generating order statistics:
 
 -   **Statistics by Date**
-    -   ~~Get order statistics for a specific date: `GET /api/statistics/by-date/{date}`~~
+    -   Get order statistics for a specific date: `GET /api/statistics/by-date/{date}`
 -   **Statistics by Time Range**
-    -   ~~Get order statistics for a specific time range: `GET /api/statistics/by-time-range/{start_date}/{end_date}`~~
+    -   Get order statistics for a specific time range: `GET /api/statistics/by-time-range/{start_date}/{end_date}`
 -   **Statistics by Employee in Time Range**
     -   ~~Get order statistics by employee for a specific time range: `GET /api/statistics/by-employee/{emp_id}/{start_date}/{end_date}`~~
 
