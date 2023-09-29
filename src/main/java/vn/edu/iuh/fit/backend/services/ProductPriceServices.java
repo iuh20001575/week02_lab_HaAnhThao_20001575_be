@@ -1,6 +1,5 @@
 package vn.edu.iuh.fit.backend.services;
 
-import jakarta.inject.Inject;
 import vn.edu.iuh.fit.backend.models.ProductPrice;
 import vn.edu.iuh.fit.backend.repositories.ProductPriceRepository;
 
@@ -9,8 +8,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class ProductPriceServices {
-    @Inject
-    private ProductPriceRepository productPriceRepository;
+    private final ProductPriceRepository productPriceRepository;
+
+    public ProductPriceServices() {
+        productPriceRepository = new ProductPriceRepository();
+    }
 
     public List<ProductPrice> getAll(int page) {
         return productPriceRepository.getAll(Math.max(page, 1));
@@ -35,5 +37,13 @@ public class ProductPriceServices {
 
     public Optional<ProductPrice> getProductNewPrice(long productId) {
         return productPriceRepository.getProductNewPrice(productId);
+    }
+
+    public List<ProductPrice> getActiveProductsWithNewPrice(int page) {
+        return productPriceRepository.getActiveProductsWithNewPrice(Math.max(page, 1));
+    }
+
+    public long countPagesWithNewPrice() {
+        return (long) Math.ceil((double) productPriceRepository.countActiveProductsWithNewPrice() / 20);
     }
 }

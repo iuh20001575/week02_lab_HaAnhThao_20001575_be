@@ -59,4 +59,20 @@ public class ProductPriceResources {
 
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
+
+    @GET
+    @Path("/new")
+    @Produces("application/json")
+    public Response getActiveProductsWithNewPrice(@DefaultValue("1") @QueryParam("page") int page) {
+        List<ProductPrice> products = productPriceServices.getActiveProductsWithNewPrice(page);
+
+        return Response.ok(products).build();
+    }
+
+    @GET
+    @Path("/pages")
+    @Produces("text/plain")
+    public Response countPagesWithNewPrice() {
+        return Response.ok(productPriceServices.countPagesWithNewPrice()).build();
+    }
 }
