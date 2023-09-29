@@ -15,3 +15,7 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
 }
+
+.ratio-3x4 {
+    aspect-ratio: 3/4;
+}

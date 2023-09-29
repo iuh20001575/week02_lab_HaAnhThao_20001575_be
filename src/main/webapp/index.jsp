@@ -25,7 +25,7 @@
     session.removeAttribute("products");
     List<ProductPrice> productPrices = (List<ProductPrice>) products;
     long pages = (long) session.getAttribute("pages");
-    long currentPage = Utils.convertToPage(page_o);
+    long currentPage = Utils.convertToLong(page_o);
 %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
