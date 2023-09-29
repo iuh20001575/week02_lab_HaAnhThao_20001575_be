@@ -1,0 +1,19 @@
+main {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+section {
+    flex: 1;
+}
+
+h2 {
+    height: 205px;
+    line-height: 205px;
+}
+
+h1 {
+    padding: 80px;
+    font-size: 160px;
+}
