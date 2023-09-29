@@ -11,14 +11,14 @@ import java.util.Optional;
 public class ProductPriceRepository extends CRUDRepository<ProductPrice> {
 
     public ProductPriceRepository() {
-       super();
-       logger = LoggerFactory.getLogger(this.getClass().getName());
+        super();
+        logger = LoggerFactory.getLogger(this.getClass().getName());
     }
 
     public List<ProductPrice> getAll(int page) {
         try {
             return em.createNamedQuery("ProductPrice.getAll", ProductPrice.class)
-                    .setFirstResult((page-1) * 20)
+                    .setFirstResult((page - 1) * 20)
                     .setMaxResults(20)
                     .getResultList();
         } catch (Exception e) {
@@ -56,5 +56,31 @@ public class ProductPriceRepository extends CRUDRepository<ProductPrice> {
         }
 
         return Optional.empty();
+    }
+
+    public List<ProductPrice> getActiveProductsWithNewPrice(int page) {
+        try {
+            return em.createNamedQuery("ProductPrice.getActiveProductsWithNewPrice", ProductPrice.class)
+                    .setFirstResult((page - 1) * 20)
+                    .setMaxResults(20)
+                    .getResultList();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+
+        return new ArrayList<>();
+    }
+
+    public long countActiveProductsWithNewPrice() {
+        try {
+            return em
+                    .createNamedQuery("ProductPrice.countActiveProductsWithNewPrice", Long.class)
+                    .setMaxResults(1)
+                    .getSingleResult();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+
+        return 0;
     }
 }
