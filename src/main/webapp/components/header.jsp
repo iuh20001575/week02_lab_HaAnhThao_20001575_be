@@ -1,3 +1,9 @@
+<%@ page import="vn.edu.iuh.fit.backend.models.Customer" %>
+<%
+    Object cartCountO = session.getAttribute("cartCount");
+    Object customerO = session.getAttribute("customer");
+%>
+
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
         <a class="navbar-brand" href="index.jsp?page=1">
@@ -16,8 +22,20 @@
                 </li>
             </ul>
         </div>
-        <a class="navbar-brand ml-auto" href="cart.jsp">
-            <img src="images/shopping-cart.png" alt="Logo" width="32" height="32" class="d-inline-block align-text-top">
-        </a>
+        <div class="ml-auto d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center">
+                <a class="navbar-brand m-0" href="cart.jsp">
+                        <img src="images/shopping-cart.png" alt="Logo" width="32" height="32" class="d-inline-block align-text-top">
+                </a>
+                <span class="d-flex justify-content-center align-items-center p-2 rounded-circle bg-danger text-white w-6 h-6 mr-3"><%= cartCountO == null ? 0 : cartCountO %></span>
+            </div>
+            <%
+                if (customerO == null) {
+            %>
+                <a class="btn btn-primary" href="login.jsp">Login</a>
+            <% } else { %>
+                <p class="m-0 fw-semibold"><%= ((Customer) customerO).getName() %></p>
+            <% } %>
+        </div>
     </div>
 </nav>

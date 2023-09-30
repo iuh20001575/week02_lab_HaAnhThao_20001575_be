@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import vn.edu.iuh.fit.backend.models.Customer;
 import vn.edu.iuh.fit.backend.models.ProductPrice;
+import vn.edu.iuh.fit.frontend.models.CartDetailModel;
 import vn.edu.iuh.fit.frontend.models.CustomerModel;
 import vn.edu.iuh.fit.frontend.models.ProductModel;
 import vn.edu.iuh.fit.frontend.utils.Utils;
@@ -20,10 +21,12 @@ import java.util.Optional;
 public class ControlServlet extends HttpServlet {
     private final ProductModel productModel;
     private final CustomerModel customerModel;
+    private final CartDetailModel cartDetailModel;
 
     public ControlServlet() {
         productModel = new ProductModel();
         customerModel = new CustomerModel();
+        cartDetailModel = new CartDetailModel();
     }
 
     @Override
@@ -51,6 +54,16 @@ public class ControlServlet extends HttpServlet {
 
         session.setAttribute("products", products);
         session.setAttribute("pages", pages);
+
+        Object customerO = session.getAttribute("customer");
+        long cartCount = 0;
+
+        if (customerO != null) {
+            Customer customer = (Customer) customerO;
+            cartCount = cartDetailModel.countByCustomer(customer.getId());
+        }
+
+        session.setAttribute("cartCount", cartCount);
 
         resp.sendRedirect("?page=" + page);
     }
