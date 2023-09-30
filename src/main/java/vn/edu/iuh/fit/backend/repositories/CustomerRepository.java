@@ -35,4 +35,23 @@ public class CustomerRepository extends CRUDRepository<Customer> {
 
         return Optional.empty();
     }
+
+    public Optional<Customer> login(String phone, String password) {
+        System.out.println("Phone: " + phone);
+        try {
+            Customer customer = em.createNamedQuery("Customer.login", Customer.class)
+                    .setParameter("phone", phone)
+                    .setMaxResults(1)
+                    .getSingleResult();
+
+            System.out.println(customer);
+
+            return Optional.of(customer);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+
+        return Optional.empty();
+    }
 }

@@ -1,6 +1,5 @@
 package vn.edu.iuh.fit.backend.services;
 
-import jakarta.inject.Inject;
 import vn.edu.iuh.fit.backend.models.Customer;
 import vn.edu.iuh.fit.backend.repositories.CustomerRepository;
 
@@ -8,8 +7,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class CustomerServices {
-    @Inject
-    private CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
+
+    public CustomerServices() {
+        customerRepository = new CustomerRepository();
+    }
 
     public List<Customer> getAll(int page) {
         return customerRepository.getAll(Math.max(1, page));
@@ -30,5 +32,9 @@ public class CustomerServices {
             return Optional.empty();
 
         return Optional.of(customerRepository.update(customer));
+    }
+
+    public Optional<Customer> login(String phone, String password) {
+        return customerRepository.login(phone, password);
     }
 }

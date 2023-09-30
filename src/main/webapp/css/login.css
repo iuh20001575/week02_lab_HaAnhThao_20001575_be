@@ -1,0 +1,11 @@
+main {
+    height: 100vh;
+}
+
+section {
+    width: min(100%, 500px);
+}
+
+.invalid-feedback.error-message {
+    display: block;
+}
