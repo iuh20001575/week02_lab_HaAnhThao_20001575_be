@@ -45,6 +45,18 @@ public class CustomerResources {
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
+    @POST
+    @Produces("application/json")
+    @Path("/login")
+    public Response login(@FormParam("phone") String phone, @FormParam("password") String password) {
+        Optional<Customer> customer = customerServices.login(phone, password);
+
+        if (customer.isEmpty())
+            return Response.status(Response.Status.NOT_FOUND).build();
+
+        return Response.ok(customer.get()).build();
+    }
+
     @PUT
     @Consumes("application/json")
     public Response update(Customer customer) {

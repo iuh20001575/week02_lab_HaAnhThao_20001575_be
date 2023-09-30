@@ -8,7 +8,8 @@ import java.util.List;
 @Entity
 @Table(name = "customer")
 @NamedQueries({
-        @NamedQuery(name = "Customer.getAll", query = "FROM Customer")
+        @NamedQuery(name = "Customer.getAll", query = "FROM Customer"),
+        @NamedQuery(name = "Customer.login", query = "FROM Customer WHERE phone LIKE :phone")
 })
 public class Customer {
     @Id
@@ -21,7 +22,7 @@ public class Customer {
     private String email;
     @Column(name = "cust_name", columnDefinition = "VARCHAR(150)", nullable = false)
     private String name;
-    @Column(columnDefinition = "VARCHAR(15)", nullable = false)
+    @Column(columnDefinition = "VARCHAR(15)", nullable = false, unique = true)
     private String phone;
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
