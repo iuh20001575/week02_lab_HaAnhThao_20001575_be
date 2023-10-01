@@ -59,9 +59,9 @@
                     </div>
                     <div class="col col-3 mt-3">
                         <div class="input-group mb-3 ">
-                            <span class="input-group-text minus">-</span>
+                            <span class="input-group-text minus pointer-event user-select-none">-</span>
                             <input type="number" min="1" class="form-control text-center" value="1">
-                            <span class="input-group-text plus">+</span>
+                            <span class="input-group-text plus pointer-event user-select-none">+</span>
                         </div>
                     </div>
                     <div class="d-flex gap-3 mt-3">
@@ -74,6 +74,6 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script src="./js/product.js"></script>
+    <script src="./js/handleQuantityInput.js"></script>
 </body>
 </html>

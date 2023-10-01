@@ -83,4 +83,16 @@ public class ProductPriceRepository extends CRUDRepository<ProductPrice> {
 
         return 0;
     }
+
+    public List<ProductPrice> getActiveProductsWithNewPriceByProductIds(List<Long> productIds) {
+        try {
+            return em.createNamedQuery("ProductPrice.getActiveProductsWithNewPriceByProductIds", ProductPrice.class)
+                    .setParameter("productIds", productIds)
+                    .getResultList();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+
+        return new ArrayList<>();
+    }
 }

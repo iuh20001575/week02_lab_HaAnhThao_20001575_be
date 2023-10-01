@@ -5,9 +5,12 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
+import vn.edu.iuh.fit.backend.models.CartDetail;
 import vn.edu.iuh.fit.backend.services.CartDetailServices;
 
-@Path("/cart-detail")
+import java.util.List;
+
+@Path("/cart-details")
 public class CartDetailResources {
     private final CartDetailServices cartDetailServices;
 
@@ -20,5 +23,14 @@ public class CartDetailResources {
     @Path("/{cus_id}/count")
     public Response countByCustomer(@PathParam("cus_id") long customerId) {
         return Response.ok(cartDetailServices.countByCustomer(customerId)).build();
+    }
+
+    @GET
+    @Produces("application/json")
+    @Path("/{cus_id}")
+    public Response getCartDetailsByCustomerId(@PathParam("cus_id") long customerId) {
+        List<CartDetail> cartDetails = cartDetailServices.getCartDetailsByCustomerId(customerId);
+
+        return Response.ok(cartDetails).build();
     }
 }

@@ -4,7 +4,7 @@
     Object customerO = session.getAttribute("customer");
 %>
 
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom border-primary border-3">
     <div class="container-fluid">
         <a class="navbar-brand" href="index.jsp?page=1">
             <img src="images/logo.png" alt="Logo" width="32" height="32" class="d-inline-block align-text-top">

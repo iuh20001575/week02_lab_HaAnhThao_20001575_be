@@ -46,4 +46,8 @@ public class ProductPriceServices {
     public long countPagesWithNewPrice() {
         return (long) Math.ceil((double) productPriceRepository.countActiveProductsWithNewPrice() / 20);
     }
+
+    public List<ProductPrice> getActiveProductsWithNewPriceByProductIds(List<Long> productIds) {
+        return productPriceRepository.getActiveProductsWithNewPriceByProductIds(productIds);
+    }
 }

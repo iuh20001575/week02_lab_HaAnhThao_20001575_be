@@ -6,14 +6,17 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import vn.edu.iuh.fit.backend.models.CartDetail;
 import vn.edu.iuh.fit.backend.models.Customer;
 import vn.edu.iuh.fit.backend.models.ProductPrice;
 import vn.edu.iuh.fit.frontend.models.CartDetailModel;
 import vn.edu.iuh.fit.frontend.models.CustomerModel;
 import vn.edu.iuh.fit.frontend.models.ProductModel;
+import vn.edu.iuh.fit.frontend.models.ProductPriceModel;
 import vn.edu.iuh.fit.frontend.utils.Utils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,11 +25,13 @@ public class ControlServlet extends HttpServlet {
     private final ProductModel productModel;
     private final CustomerModel customerModel;
     private final CartDetailModel cartDetailModel;
+    private final ProductPriceModel productPriceModel;
 
     public ControlServlet() {
         productModel = new ProductModel();
         customerModel = new CustomerModel();
         cartDetailModel = new CartDetailModel();
+        productPriceModel = new ProductPriceModel();
     }
 
     @Override
@@ -39,6 +44,48 @@ public class ControlServlet extends HttpServlet {
             handleGetProducts(req, resp);
         else if (action.equalsIgnoreCase("product"))
             handleGetProduct(req, resp);
+        else if (action.equalsIgnoreCase("cart"))
+            handleGetCart(req, resp);
+    }
+
+    private Optional<Customer> getCustomerFromSession(HttpServletRequest req) {
+        return getCustomerFromSession(req.getSession(true));
+    }
+
+    private Optional<Customer> getCustomerFromSession(HttpSession session) {
+        Object customerO = session.getAttribute("customer");
+
+        if (customerO == null)
+            return Optional.empty();
+
+        Customer customer = (Customer) customerO;
+
+        return Optional.of(customer);
+    }
+
+    private void handleGetCart(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        HttpSession session = req.getSession(true);
+
+        Optional<Customer> customerOptional = getCustomerFromSession(session);
+
+        if (customerOptional.isEmpty())
+            resp.sendRedirect("login.jsp");
+        else {
+            Customer customer = customerOptional.get();
+
+            List<CartDetail> cartDetails = cartDetailModel.getCartDetailsByCustomerId(customer.getId());
+            List<Long> list = new ArrayList<>();
+            for (CartDetail cartDetail : cartDetails) {
+                Long productId = cartDetail.getProduct().getProduct_id();
+                list.add(productId);
+            }
+            List<ProductPrice> productPrices = productPriceModel.getActiveProductsWithNewPriceByProductIds(list);
+
+
+            session.setAttribute("cartDetails", cartDetails);
+            session.setAttribute("productPrices", productPrices);
+            resp.sendRedirect("cart.jsp");
+        }
     }
 
     private void handleGetProducts(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -55,11 +102,11 @@ public class ControlServlet extends HttpServlet {
         session.setAttribute("products", products);
         session.setAttribute("pages", pages);
 
-        Object customerO = session.getAttribute("customer");
+        Optional<Customer> customerOptional = getCustomerFromSession(session);
         long cartCount = 0;
 
-        if (customerO != null) {
-            Customer customer = (Customer) customerO;
+        if (customerOptional.isPresent()) {
+            Customer customer = customerOptional.get();
             cartCount = cartDetailModel.countByCustomer(customer.getId());
         }
 
