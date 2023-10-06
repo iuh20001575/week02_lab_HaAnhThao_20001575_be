@@ -32,9 +32,7 @@
             <table class="table table-hover mt-3">
                 <thead>
                     <tr>
-                        <th scope="col">
-                            <input class="form-check-input mt-0" type="checkbox" value="">
-                        </th>
+                        <th scope="col"></th>
                         <th scope="col">Product</th>
                         <th scope="col">Price</th>
                         <th scope="col">Quantity</th>
@@ -50,8 +48,8 @@
                         String imagePath = productImageList == null || productImageList.isEmpty() ? "images/alternate_image.png" : productImageList.get(0).getPath();
                     %>
                         <tr>
-                            <th>
-                                <input class="form-check-input mt-0" type="checkbox" value="">
+                            <th class="align-middle">
+                                <input class="form-check-input mt-0 select-item" type="checkbox" value="">
                             </th>
                             <td>
                                 <div class="d-flex gap-1 align-items-center">
@@ -59,17 +57,17 @@
                                     <p class="m-0"><%= product.getName() %></p>
                                 </div>
                             </td>
-                            <td><%= productPrices.get(i).getPrice() %></td>
-                            <td>
-                                <div class="input-group mb-3 m-0 align-items-center">
+                            <td class="align-middle price"><%= String.format("%.2f", productPrices.get(i).getPrice()) %></td>
+                            <td class="align-middle">
+                                <div class="input-group mb-3 m-0 align-items-center" data-product-id="<%= product.getProduct_id() %>" data-cart-id="<%= cartDetail.getCart().getCustomer().getId() %>">
                                     <span class="input-group-text minus pointer-event user-select-none">-</span>
                                     <input type="number" min="1" class="form-control qty-input" value="<%= cartDetail.getQuantity() %>">
                                     <span class="input-group-text plus pointer-event user-select-none">+</span>
                                 </div>
                             </td>
-                            <td><%= productPrices.get(i).getPrice() * cartDetail.getQuantity() %></td>
-                            <td>
-                                <form action="" method="post">
+                            <td class="align-middle total-price"><%= String.format("%.2f", productPrices.get(i).getPrice() * cartDetail.getQuantity()) %></td>
+                            <td class="align-middle">
+                                <form action="control-servlet?action=delete-cart-detail" method="post">
                                     <input hidden="hidden" type="text" name="cart_id" value="<%= cartDetail.getCart().getCustomer().getId() %>">
                                     <input hidden="hidden" type="text" name="product_id" value="<%= product.getProduct_id() %>">
                                     <button type="submit" class="btn btn-danger">Remove</button>
@@ -85,15 +83,14 @@
                 <div class="container p-3 d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center gap-4">
                         <label class="d-flex align-items-center">
-                            <input class="form-check-input mt-0" type="checkbox" value="">
+                            <input class="form-check-input mt-0 select-all" type="checkbox" value="">
                             <span class="ms-2">Select all (<%= cartSize %>)</span>
                         </label>
-                        <button class="btn btn-outline-danger">Remove</button>
                     </div>
                     <div class="d-flex gap-4 align-items-center">
                         <p class="d-flex align-items-center m-0">
-                            Total Payment (0 Products):
-                            <span class="ms-2 fs-3 text-danger">0</span>
+                            Total Payment (<span class="product-count">0</span>&nbsp; Products):
+                            <span class="ms-2 fs-3 text-danger price">0</span>
                         </p>
                         <button type="button" class="btn btn-primary">Buy</button>
                     </div>
@@ -104,5 +101,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script src="./js/handleQuantityInput.js"></script>
+    <script src="./js/cart.js"></script>
 </body>
 </html>
