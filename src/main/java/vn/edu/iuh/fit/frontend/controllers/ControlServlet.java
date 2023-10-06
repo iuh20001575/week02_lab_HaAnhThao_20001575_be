@@ -88,7 +88,7 @@ public class ControlServlet extends HttpServlet {
         }
     }
 
-    private void handleGetProducts(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void handleGetProducts(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String page = req.getParameter("page");
 
         if (page == null)
@@ -112,7 +112,8 @@ public class ControlServlet extends HttpServlet {
 
         session.setAttribute("cartCount", cartCount);
 
-        resp.sendRedirect("?page=" + page);
+        req.setAttribute("products", products);
+        req.getRequestDispatcher("?page=" + page).forward(req, resp);
     }
 
     private void handleGetProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -139,6 +140,9 @@ public class ControlServlet extends HttpServlet {
             req.getRequestDispatcher("notFound.jsp").forward(req, resp);
         else if (action.equalsIgnoreCase("login"))
             handlePostLogin(req, resp);
+        else if (action.equalsIgnoreCase("delete-cart-detail")) {
+            handleDeleteCartDetail(req, resp);
+        }
     }
 
     private void handlePostLogin(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -159,5 +163,14 @@ public class ControlServlet extends HttpServlet {
             session.setAttribute("customer", customer.get());
             resp.sendRedirect(getServletContext().getContextPath() + "/?page=1");
         }
+    }
+
+    private void handleDeleteCartDetail(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        long cartId = Long.parseLong(req.getParameter("cart_id"));
+        long productId = Long.parseLong(req.getParameter("product_id"));
+
+        cartDetailModel.delete(productId, cartId);
+
+        resp.sendRedirect("cart.jsp");
     }
 }

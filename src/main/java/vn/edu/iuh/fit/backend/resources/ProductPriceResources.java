@@ -6,6 +6,7 @@ import jakarta.ws.rs.core.Response;
 import vn.edu.iuh.fit.backend.services.ProductPriceServices;
 import vn.edu.iuh.fit.backend.models.ProductPrice;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,5 +75,14 @@ public class ProductPriceResources {
     @Produces("text/plain")
     public Response countPagesWithNewPrice() {
         return Response.ok(productPriceServices.countPagesWithNewPrice()).build();
+    }
+
+    @GET
+    @Path("/cart")
+    @Produces("application/json")
+    public Response getActiveProductsWithNewPriceByProductIds(@QueryParam("product_ids") List<Long> productIds) {
+
+
+        return Response.ok().build();
     }
 }
