@@ -238,10 +238,16 @@ public class ControlServlet extends HttpServlet {
     }
 
     private void handleOrder(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String custIdS = req.getParameter("cust_id");
+
+        if (custIdS == null) {
+            resp.sendRedirect("login.jsp");
+            return;
+        }
+
         String[] productIds = req.getParameterValues("product_id[]");
         String[] qties = req.getParameterValues("qty[]");
         String[] prices = req.getParameterValues("prices[]");
-        String custIdS = req.getParameter("cust_id");
 
         long custId = Long.parseLong(custIdS);
         List<Long> productIdList = Arrays.stream(productIds).map(Long::parseLong).collect(Collectors.toList());

@@ -1,6 +1,7 @@
 package vn.edu.iuh.fit.backend.repositories;
 
 import org.slf4j.LoggerFactory;
+import vn.edu.iuh.fit.backend.enums.ProductStatus;
 import vn.edu.iuh.fit.backend.models.ProductPrice;
 
 import java.time.LocalDateTime;
@@ -61,6 +62,7 @@ public class ProductPriceRepository extends CRUDRepository<ProductPrice> {
     public List<ProductPrice> getActiveProductsWithNewPrice(int page) {
         try {
             return em.createNamedQuery("ProductPrice.getActiveProductsWithNewPrice", ProductPrice.class)
+                    .setParameter("status", ProductStatus.ACTIVE)
                     .setFirstResult((page - 1) * 20)
                     .setMaxResults(20)
                     .getResultList();
@@ -75,6 +77,7 @@ public class ProductPriceRepository extends CRUDRepository<ProductPrice> {
         try {
             return em
                     .createNamedQuery("ProductPrice.countActiveProductsWithNewPrice", Long.class)
+                    .setParameter("status", ProductStatus.ACTIVE)
                     .setMaxResults(1)
                     .getSingleResult();
         } catch (Exception e) {

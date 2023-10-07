@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 @Table(name = "product_price")
 @NamedQueries({
         @NamedQuery(name = "ProductPrice.getAll", query = "FROM ProductPrice"),
-        @NamedQuery(name = "ProductPrice.getActiveProductsWithNewPrice", query = "FROM ProductPrice p WHERE price_date_time >= all (SELECT pp.price_date_time FROM ProductPrice pp WHERE pp.product.id = p.product.id)"),
+        @NamedQuery(name = "ProductPrice.getActiveProductsWithNewPrice", query = "FROM ProductPrice p WHERE p.product.status = :status and price_date_time >= all (SELECT pp.price_date_time FROM ProductPrice pp WHERE pp.product.id = p.product.id)"),
         @NamedQuery(name = "ProductPrice.getActiveProductsWithNewPriceByProductIds", query = "FROM ProductPrice p WHERE product.id IN :productIds AND price_date_time >= all (SELECT pp.price_date_time FROM ProductPrice pp WHERE pp.product.id = p.product.id) order by product.id"),
-        @NamedQuery(name = "ProductPrice.countActiveProductsWithNewPrice", query = "SELECT count(*) FROM ProductPrice p WHERE price_date_time >= all (SELECT pp.price_date_time FROM ProductPrice pp WHERE pp.product.id = p.product.id)"),
+        @NamedQuery(name = "ProductPrice.countActiveProductsWithNewPrice", query = "SELECT count(*) FROM ProductPrice p WHERE p.product.status = :status and price_date_time >= all (SELECT pp.price_date_time FROM ProductPrice pp WHERE pp.product.id = p.product.id)"),
         @NamedQuery(name = "ProductPrice.findById", query = "FROM ProductPrice WHERE price_date_time = :price_date_time AND product.id = :productId"),
         @NamedQuery(name = "ProductPrice.getProductNewPrice", query = "FROM ProductPrice WHERE product.id = :productId order by price_date_time desc")
 })
