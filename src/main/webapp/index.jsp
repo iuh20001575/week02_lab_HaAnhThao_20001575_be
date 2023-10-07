@@ -3,6 +3,7 @@
 <%@ page import="vn.edu.iuh.fit.backend.models.ProductImage" %>
 <%@ page import="vn.edu.iuh.fit.backend.models.Product" %>
 <%@ page import="vn.edu.iuh.fit.frontend.utils.Utils" %>
+<%@ page import="vn.edu.iuh.fit.backend.models.Customer" %>
 
 <%
     Object products = request.getAttribute("products");
@@ -20,6 +21,7 @@
     List<ProductPrice> productPrices = (List<ProductPrice>) products;
     long pages = (long) session.getAttribute("pages");
     long currentPage = Utils.convertToLong(page_o);
+    Object customerO = session.getAttribute("customer");
 %>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
@@ -55,7 +57,17 @@
                                 <a class="link-underline-light" href="product.jsp?id=<%= product.getProduct_id() %>"><%= product.getName() %></a>
                             </h5>
                             <p class="card-text line-clamp-3"><%= product.getDescription() %></p>
-                            <a href="#" class="btn btn-primary">Add to cart</a>
+                            <form action="control-servlet?action=add-cart-detail" method="post" class="m-0">
+                                <%
+                                    if (customerO != null) {
+                                        Customer customer = (Customer) customerO;
+                                %>
+                                <input type="hidden" name="cust_id" value="<%= customer.getId()  %>">
+                                <% } %>
+                                <input type="hidden" name="prod_id" value="<%= product.getProduct_id()  %>">
+                                <input type="hidden" name="qty" value="1">
+                                <button type="submit" class="btn btn-primary">Add to cart</button>
+                            </form>
                         </div>
                     </div>
                 </div>

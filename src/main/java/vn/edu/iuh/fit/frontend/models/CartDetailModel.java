@@ -24,4 +24,8 @@ public class CartDetailModel {
     public Optional<Boolean> delete(long productId, long cartId) {
         return cartDetailServices.delete(productId, cartId);
     }
+
+    public boolean add(CartDetail cartDetail) {
+        return cartDetailServices.add(cartDetail);
+    }
 }

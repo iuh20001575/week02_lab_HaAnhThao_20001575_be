@@ -27,7 +27,7 @@ public class CartDetailServices {
         if (find.isEmpty())
             return Optional.empty();
 
-        return Optional.of(cartDetailRepository.updateQuantity(cartDetail));
+        return Optional.of(cartDetailRepository.update(cartDetail));
     }
 
     public Optional<CartDetail> findById(long productId, long cartId) {
@@ -41,5 +41,23 @@ public class CartDetailServices {
             return Optional.empty();
 
         return Optional.of(cartDetailRepository.delete(productId, cartId));
+    }
+
+    public Optional<Boolean> addQty(CartDetail cartDetail) {
+        Optional<CartDetail> cartDetailOptional = findById(cartDetail.getProduct().getProduct_id(), cartDetail.getCart().getCustomer().getId());
+
+        if (cartDetailOptional.isEmpty())
+            return Optional.empty();
+
+        return Optional.of(cartDetailRepository.addQty(cartDetail));
+    }
+
+    public boolean add(CartDetail cartDetail) {
+        Optional<CartDetail> cartDetailOptional = findById(cartDetail.getProduct().getProduct_id(), cartDetail.getCart().getCustomer().getId());
+
+        if (cartDetailOptional.isEmpty())
+            return cartDetailRepository.add(cartDetail);
+
+        return cartDetailRepository.addQty(cartDetail);
     }
 }

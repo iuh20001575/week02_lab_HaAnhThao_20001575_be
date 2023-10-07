@@ -32,6 +32,17 @@ public class CartDetailResources {
         return Response.ok(cartDetails).build();
     }
 
+    @POST
+    @Produces("application/json")
+    public Response add(CartDetail cartDetail) {
+        boolean added = cartDetailServices.add(cartDetail);
+
+        if (added)
+            return Response.ok().build();
+
+        return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+
     @PUT
     @Consumes("application/json")
     public Response updateQuantity(CartDetail cartDetail) {

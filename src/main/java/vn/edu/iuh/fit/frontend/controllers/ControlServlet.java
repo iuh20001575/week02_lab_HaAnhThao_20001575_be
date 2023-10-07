@@ -6,9 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import vn.edu.iuh.fit.backend.models.CartDetail;
-import vn.edu.iuh.fit.backend.models.Customer;
-import vn.edu.iuh.fit.backend.models.ProductPrice;
+import vn.edu.iuh.fit.backend.models.*;
 import vn.edu.iuh.fit.frontend.models.CartDetailModel;
 import vn.edu.iuh.fit.frontend.models.CustomerModel;
 import vn.edu.iuh.fit.frontend.models.ProductModel;
@@ -113,7 +111,7 @@ public class ControlServlet extends HttpServlet {
         session.setAttribute("cartCount", cartCount);
 
         req.setAttribute("products", products);
-        req.getRequestDispatcher("?page=" + page).forward(req, resp);
+        req.getRequestDispatcher(getServletContext().getContextPath() + "?page=" + page).forward(req, resp);
     }
 
     private void handleGetProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -143,6 +141,9 @@ public class ControlServlet extends HttpServlet {
         else if (action.equalsIgnoreCase("delete-cart-detail")) {
             handleDeleteCartDetail(req, resp);
         }
+        else if (action.equalsIgnoreCase("add-cart-detail"))
+            handlePostAddCartDetail(req, resp);
+
     }
 
     private void handlePostLogin(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -170,7 +171,53 @@ public class ControlServlet extends HttpServlet {
         long productId = Long.parseLong(req.getParameter("product_id"));
 
         cartDetailModel.delete(productId, cartId);
+        HttpSession session = req.getSession(true);
+        Object cartCountO = session.getAttribute("cartCount");
+
+        if (cartCountO != null) {
+            long cartCount = (long) cartCountO;
+
+            session.setAttribute("cartCount", --cartCount);
+        }
 
         resp.sendRedirect("cart.jsp");
+    }
+
+    private void handlePostAddCartDetail(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String custIdS = req.getParameter("cust_id");
+
+        if (custIdS == null) {
+            resp.sendRedirect("login.jsp");
+            return;
+        }
+
+        HttpSession session = req.getSession(true);
+        String toastType = "danger";
+        String toastMessage = "Add fail.";
+
+        try {
+            long custId = Long.parseLong(custIdS);
+            long prodId = Long.parseLong(req.getParameter("prod_id"));
+            int qty = Integer.parseInt(req.getParameter("qty"));
+
+            CartDetail cartDetail = new CartDetail(new Product(prodId), new Cart(new Customer(custId)), qty);
+
+            boolean b = cartDetailModel.add(cartDetail);
+
+            if (b) {
+                toastType = "success";
+                toastMessage = "Add success!";
+            }
+        } catch (Exception e) {
+            toastMessage = e.getMessage();
+        } finally {
+            session.setAttribute("toast-type", toastType);
+            session.setAttribute("toast-message", toastMessage);
+            if (toastType.equals("danger"))
+                resp.sendRedirect(req.getHeader("Referer"));
+            else
+                resp.sendRedirect(getServletContext().getContextPath() + "/?page=1");
+        }
+
     }
 }

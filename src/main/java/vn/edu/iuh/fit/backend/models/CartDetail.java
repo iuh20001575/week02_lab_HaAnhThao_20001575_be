@@ -9,7 +9,8 @@ import jakarta.persistence.*;
         @NamedQuery(name = "CartDetail.countByCustomer", query = "SELECT count(*) FROM CartDetail where cart.customer.id = :customerId"),
         @NamedQuery(name = "CartDetail.getCartDetailsByCustomerId", query = "From CartDetail where cart.customer.id = :customerId order by product.id"),
         @NamedQuery(name = "CartDetail.findById", query = "FROM CartDetail WHERE product.id = :productId AND cart.customer.id = :cartId"),
-        @NamedQuery(name = "CartDetail.delete", query = "DELETE CartDetail WHERE product.id = :productId AND cart.customer.id = :cartId")
+        @NamedQuery(name = "CartDetail.delete", query = "DELETE CartDetail WHERE product.id = :productId AND cart.customer.id = :cartId"),
+        @NamedQuery(name = "CartDetail.addQty", query = "UPDATE CartDetail SET quantity = quantity + :qty WHERE product.id = :productId AND cart.customer.id = :cartId")
 })
 public class CartDetail {
     @Id

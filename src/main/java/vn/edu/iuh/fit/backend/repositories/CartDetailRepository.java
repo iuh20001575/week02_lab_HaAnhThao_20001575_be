@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class CartDetailRepository extends CRUDRepository<Cart> {
+public class CartDetailRepository extends CRUDRepository<CartDetail> {
     public CartDetailRepository() {
         super();
         logger = LoggerFactory.getLogger(this.getClass().getName());
@@ -39,25 +39,11 @@ public class CartDetailRepository extends CRUDRepository<Cart> {
         return new ArrayList<>();
     }
 
-    public boolean updateQuantity(CartDetail cartDetail) {
-        try {
-            transaction.begin();
-            em.merge(cartDetail);
-            transaction.commit();
-            return true;
-        } catch (Exception e) {
-            transaction.rollback();
-            logger.error(e.getMessage());
-        }
-
-        return false;
-    }
-
     public Optional<CartDetail> findById(long productId, long cartId) {
         try {
             CartDetail cartDetail = em.createNamedQuery("CartDetail.findById", CartDetail.class)
-                    .setParameter("productId",productId)
-                    .setParameter("cartId",cartId)
+                    .setParameter("productId", productId)
+                    .setParameter("cartId", cartId)
                     .setMaxResults(1)
                     .getSingleResult();
 
@@ -80,6 +66,26 @@ public class CartDetailRepository extends CRUDRepository<Cart> {
 
             transaction.commit();
             return true;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            transaction.rollback();
+        }
+
+        return false;
+    }
+
+    public boolean addQty(CartDetail cartDetail) {
+        try {
+            transaction.begin();
+
+            int update = em.createNamedQuery("CartDetail.addQty")
+                    .setParameter("qty", cartDetail.getQuantity())
+                    .setParameter("productId", cartDetail.getProduct().getProduct_id())
+                    .setParameter("cartId", cartDetail.getCart().getCustomer().getId())
+                    .executeUpdate();
+
+            transaction.commit();
+            return update > 0;
         } catch (Exception e) {
             logger.error(e.getMessage());
             transaction.rollback();

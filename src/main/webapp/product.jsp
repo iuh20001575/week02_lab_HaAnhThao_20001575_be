@@ -2,6 +2,7 @@
 <%@ page import="vn.edu.iuh.fit.backend.models.Product" %>
 <%@ page import="vn.edu.iuh.fit.backend.models.ProductImage" %>
 <%@ page import="java.util.List" %>
+<%@ page import="vn.edu.iuh.fit.backend.models.Customer" %>
 <%
     Object product_o = session.getAttribute("product");
 
@@ -13,6 +14,8 @@
         request.getRequestDispatcher("control-servlet?action=product&id=" + id).forward(request, response);
         return;
     }
+
+    Object customerO = session.getAttribute("customer");
 
     session.removeAttribute("product");
     ProductPrice productPrice = (ProductPrice) product_o;
@@ -60,12 +63,22 @@
                     <div class="col col-3 mt-3">
                         <div class="input-group mb-3 ">
                             <span class="input-group-text minus pointer-event user-select-none">-</span>
-                            <input type="number" min="1" class="form-control text-center" value="1">
+                            <input type="number" min="1" class="form-control text-center qty-input" value="1">
                             <span class="input-group-text plus pointer-event user-select-none">+</span>
                         </div>
                     </div>
                     <div class="d-flex gap-3 mt-3">
-                        <button type="button" class="btn btn-outline-primary">Add to cart</button>
+                        <form action="control-servlet?action=add-cart-detail" method="post" class="m-0">
+                            <%
+                                if (customerO != null) {
+                                    Customer customer = (Customer) customerO;
+                            %>
+                                <input type="hidden" name="cust_id" value="<%= customer.getId()  %>">
+                            <% } %>
+                            <input type="hidden" name="prod_id" value="<%= product.getProduct_id()  %>">
+                            <input type="hidden" name="qty" value="1">
+                            <button type="submit" class="btn btn-outline-primary">Add to cart</button>
+                        </form>
                         <button class="btn btn-primary" type="button">Buy</button>
                     </div>
                 </div>
@@ -74,6 +87,21 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="./js/toast.js"></script>
     <script src="./js/handleQuantityInput.js"></script>
+    <script src="./js/product.js"></script>
+    <script>
+        const toastType = '<%= session.getAttribute("toast-type") %>'
+        const toastMessage = '<%= session.getAttribute("toast-message") %>'
+
+        <%
+          session.removeAttribute("toast-type");
+          session.removeAttribute("toast-message");
+        %>
+
+        if (toastType !== 'null')
+            addToast(toastType, toastMessage);
+
+    </script>
 </body>
 </html>
