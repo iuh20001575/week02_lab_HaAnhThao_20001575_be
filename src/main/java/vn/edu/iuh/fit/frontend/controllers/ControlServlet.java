@@ -7,16 +7,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import vn.edu.iuh.fit.backend.models.*;
-import vn.edu.iuh.fit.frontend.models.CartDetailModel;
-import vn.edu.iuh.fit.frontend.models.CustomerModel;
-import vn.edu.iuh.fit.frontend.models.ProductModel;
-import vn.edu.iuh.fit.frontend.models.ProductPriceModel;
+import vn.edu.iuh.fit.frontend.models.*;
 import vn.edu.iuh.fit.frontend.utils.Utils;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/control-servlet"})
 public class ControlServlet extends HttpServlet {
@@ -24,12 +24,14 @@ public class ControlServlet extends HttpServlet {
     private final CustomerModel customerModel;
     private final CartDetailModel cartDetailModel;
     private final ProductPriceModel productPriceModel;
+    private final OrderModel orderModel;
 
     public ControlServlet() {
         productModel = new ProductModel();
         customerModel = new CustomerModel();
         cartDetailModel = new CartDetailModel();
         productPriceModel = new ProductPriceModel();
+        orderModel = new OrderModel();
     }
 
     @Override
@@ -142,12 +144,12 @@ public class ControlServlet extends HttpServlet {
             handlePostLogin(req, resp);
         else if (action.equalsIgnoreCase("delete-cart-detail")) {
             handleDeleteCartDetail(req, resp);
-        }
-        else if (action.equalsIgnoreCase("add-cart-detail"))
+        } else if (action.equalsIgnoreCase("add-cart-detail"))
             handlePostAddCartDetail(req, resp);
         else if (action.equalsIgnoreCase("checkout"))
             handlePostCheckout(req, resp);
-
+        else if (action.equalsIgnoreCase("order"))
+            handleOrder(req, resp);
     }
 
     private void handlePostLogin(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -210,7 +212,7 @@ public class ControlServlet extends HttpServlet {
 
             if (b) {
                 toastType = "success";
-                toastMessage = "Add success!";
+                toastMessage = "Add product to cart successfully!";
             }
         } catch (Exception e) {
             toastMessage = e.getMessage();
@@ -233,5 +235,51 @@ public class ControlServlet extends HttpServlet {
         }
 
         resp.sendRedirect("checkout.jsp");
+    }
+
+    private void handleOrder(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String[] productIds = req.getParameterValues("product_id[]");
+        String[] qties = req.getParameterValues("qty[]");
+        String[] prices = req.getParameterValues("prices[]");
+        String custIdS = req.getParameter("cust_id");
+
+        long custId = Long.parseLong(custIdS);
+        List<Long> productIdList = Arrays.stream(productIds).map(Long::parseLong).collect(Collectors.toList());
+
+        Order order = new Order(LocalDateTime.now(), new Customer(custId), new Employee(1L));
+
+        double qty, price;
+        long productId;
+        OrderDetail orderDetail;
+        Product product;
+        List<OrderDetail> orderDetails = new ArrayList<>();
+        for (int i = 0; i < productIds.length; ++i) {
+            qty = Double.parseDouble(qties[i]);
+            price = Double.parseDouble(prices[i]);
+            productId = productIdList.get(i);
+            product = new Product(productId);
+
+            orderDetail = new OrderDetail(price, order, qty, null, product);
+            orderDetails.add(orderDetail);
+        }
+
+        order.setOrderDetails(orderDetails);
+
+        boolean b = orderModel.add(order);
+        cartDetailModel.deleteByProductIds(productIdList, custId);
+
+        HttpSession session = req.getSession(true);
+        String location = getServletContext().getContextPath() + "/?page=1";
+
+        if (b) {
+            session.setAttribute("toast-type", "success");
+            session.setAttribute("toast-message", "Order successfully!");
+        } else {
+            location = req.getHeader("Referer");
+            session.setAttribute("toast-type", "danger");
+            session.setAttribute("toast-message", "Order fail.");
+        }
+
+        resp.sendRedirect(location);
     }
 }

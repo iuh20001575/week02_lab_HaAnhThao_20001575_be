@@ -8,8 +8,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class OrderServices {
-    @Inject
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
+
+    public OrderServices() {
+        this.orderRepository = new OrderRepository();
+    }
 
     public List<Order> getAll(int page) {
         return orderRepository.getAll(Math.max(page, 1));

@@ -27,7 +27,7 @@
     <main>
         <jsp:include page="components/header.jsp" />
         <section class="container">
-            <form action="control-servlet?action=checkout" method="post">
+            <form action="control-servlet?action=order" method="post">
                 <input type="hidden" name="cust_id" value="<%= customer.getId() %>">
                 <table class="table table-hover mt-3">
                     <thead>
@@ -61,6 +61,7 @@
                                 <td class="align-middle">
                                     <div class="input-group mb-3 m-0 align-items-center" data-product-id="<%= product.getProduct_id() %>" data-cart-id="<%= cartDetail.getCart().getCustomer().getId() %>">
                                         <span class="input-group-text minus pointer-event user-select-none">-</span>
+                                        <input type="hidden" name="prices[]" value="<%= productPrices.get(i).getPrice() %>">
                                         <input type="number" min="1" class="form-control qty-input" name="qty[]" value="<%= cartDetail.getQuantity() %>">
                                         <span class="input-group-text plus pointer-event user-select-none">+</span>
                                     </div>
@@ -98,5 +99,19 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script src="./js/handleQuantityInput.js"></script>
     <script src="./js/cart.js"></script>
+    <script src="./js/toast.js"></script>
+    <script>
+        const toastType = '<%= session.getAttribute("toast-type") %>'
+        const toastMessage = '<%= session.getAttribute("toast-message") %>'
+
+        <%
+          session.removeAttribute("toast-type");
+          session.removeAttribute("toast-message");
+        %>
+
+        if (toastType !== 'null')
+            addToast(toastType, toastMessage);
+
+    </script>
 </body>
 </html>

@@ -61,7 +61,11 @@ public class CartDetailServices {
         return cartDetailRepository.addQty(cartDetail);
     }
 
-    public List<CartDetail> getByProductIds(List<Long> productIds) {
-        return cartDetailRepository.getByProductIds(productIds);
+    public List<CartDetail> getByProductIds(List<Long> productIds, long cartId) {
+        return cartDetailRepository.getByProductIds(productIds,cartId);
+    }
+
+    public boolean deleteByProductIds(List<Long> productIds, long cartId) {
+        return cartDetailRepository.deleteByProductIds(productIds, cartId);
     }
 }

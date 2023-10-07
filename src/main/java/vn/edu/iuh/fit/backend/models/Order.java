@@ -27,7 +27,7 @@ public class Order {
     @JoinColumn(name = "employee_id", referencedColumnName = "emp_id", nullable = false)
     private Employee employee;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<OrderDetail> orderDetails;
 
     public Order() {

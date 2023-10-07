@@ -28,4 +28,8 @@ public class CartDetailModel {
     public boolean add(CartDetail cartDetail) {
         return cartDetailServices.add(cartDetail);
     }
+
+    public boolean deleteByProductIds(List<Long> productIds, long custId) {
+        return cartDetailServices.deleteByProductIds(productIds, custId);
+    }
 }

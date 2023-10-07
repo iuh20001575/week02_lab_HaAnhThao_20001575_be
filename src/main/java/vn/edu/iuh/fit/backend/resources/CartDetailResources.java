@@ -35,8 +35,8 @@ public class CartDetailResources {
     @GET
     @Produces("application/json")
     @Consumes("application/json")
-    public Response getByProductIds(@QueryParam("product-ids") List<Long> productIds) {
-        List<CartDetail> cartDetails = cartDetailServices.getByProductIds(productIds);
+    public Response getByProductIds(@QueryParam("product-ids") List<Long> productIds, @QueryParam("cus_id") long customerId) {
+        List<CartDetail> cartDetails = cartDetailServices.getByProductIds(productIds, customerId);
 
         System.out.println(cartDetails);
 
@@ -77,6 +77,18 @@ public class CartDetailResources {
             return Response.status(Response.Status.NOT_FOUND).build();
 
         if (optional.get())
+            return Response.ok().build();
+
+        return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+
+    @DELETE
+    @Consumes("application/json")
+    @Path("/products")
+    public Response deleteByProductIds(@QueryParam("product-ids") List<Long> productIds, @QueryParam("cus-id") long customerId) {
+        boolean deleted = cartDetailServices.deleteByProductIds(productIds, customerId);
+
+        if (deleted)
             return Response.ok().build();
 
         return Response.status(Response.Status.BAD_REQUEST).build();

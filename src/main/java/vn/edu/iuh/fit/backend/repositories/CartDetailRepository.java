@@ -94,15 +94,36 @@ public class CartDetailRepository extends CRUDRepository<CartDetail> {
         return false;
     }
 
-    public List<CartDetail> getByProductIds(List<Long> productIds) {
+    public List<CartDetail> getByProductIds(List<Long> productIds, long cartId) {
         try {
             return em.createNamedQuery("CartDetail.getByProductIds", CartDetail.class)
                     .setParameter("productIds", productIds)
+                    .setParameter("cartId", cartId)
                     .getResultList();
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
 
         return new ArrayList<>();
+    }
+
+    public boolean deleteByProductIds(List<Long> productIds, long cartId) {
+        try {
+            transaction.begin();
+
+            int executed = em.createNamedQuery("CartDetail.deleteByProductIds")
+                    .setParameter("productIds", productIds)
+                    .setParameter("cartId", cartId)
+                    .executeUpdate();
+
+            transaction.commit();
+            return executed > 0;
+        } catch (Exception e) {
+            transaction.rollback();
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+
+        return false;
     }
 }
