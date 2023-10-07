@@ -94,12 +94,14 @@ public class CartDetailRepository extends CRUDRepository<CartDetail> {
         return false;
     }
 
-    public List<CartDetail> getByProductIds(List<Long> productIds) {
+    public List<CartDetail> getByProductIds(List<Long> productIds, long custId) {
         try {
             return em.createNamedQuery("CartDetail.getByProductIds", CartDetail.class)
                     .setParameter("productIds", productIds)
+                    .setParameter("cartId", custId)
                     .getResultList();
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error(e.getMessage());
         }
 

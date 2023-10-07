@@ -28,4 +28,8 @@ public class CartDetailModel {
     public boolean add(CartDetail cartDetail) {
         return cartDetailServices.add(cartDetail);
     }
+
+    public List<CartDetail> getByProductIds(List<Long> productIds, long custId) {
+        return cartDetailServices.getByProductIds(productIds, custId);
+    }
 }

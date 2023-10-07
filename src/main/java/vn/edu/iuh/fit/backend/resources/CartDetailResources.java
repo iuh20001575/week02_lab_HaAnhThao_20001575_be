@@ -35,8 +35,10 @@ public class CartDetailResources {
     @GET
     @Produces("application/json")
     @Consumes("application/json")
-    public Response getByProductIds(@QueryParam("product-ids") List<Long> productIds) {
-        List<CartDetail> cartDetails = cartDetailServices.getByProductIds(productIds);
+    public Response getByProductIds(@QueryParam("product-ids") List<Long> productIds, @QueryParam("cust-id") long custId) {
+        System.out.println(productIds);
+        System.out.println(custId);
+        List<CartDetail> cartDetails = cartDetailServices.getByProductIds(productIds, custId);
 
         System.out.println(cartDetails);
 

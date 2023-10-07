@@ -15,8 +15,10 @@ import vn.edu.iuh.fit.frontend.utils.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/control-servlet"})
 public class ControlServlet extends HttpServlet {
@@ -142,8 +144,7 @@ public class ControlServlet extends HttpServlet {
             handlePostLogin(req, resp);
         else if (action.equalsIgnoreCase("delete-cart-detail")) {
             handleDeleteCartDetail(req, resp);
-        }
-        else if (action.equalsIgnoreCase("add-cart-detail"))
+        } else if (action.equalsIgnoreCase("add-cart-detail"))
             handlePostAddCartDetail(req, resp);
         else if (action.equalsIgnoreCase("checkout"))
             handlePostCheckout(req, resp);
@@ -225,13 +226,23 @@ public class ControlServlet extends HttpServlet {
 
     }
 
-    private void handlePostCheckout(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void handlePostCheckout(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String[] productIds = req.getParameterValues("product_id[]");
+        String custIdS = req.getParameter("cust_id");
 
-        for (int i = 0; i < productIds.length; ++i) {
-            System.out.println(productIds[i]);
+        try {
+            List<Long> productIdList = Arrays.stream(productIds).map(Long::parseLong).collect(Collectors.toList());
+            long custId = Long.parseLong(custIdS);
+
+            List<CartDetail> cartDetails = cartDetailModel.getByProductIds(productIdList, custId);
+            List<ProductPrice> productPrices = productPriceModel.getActiveProductsWithNewPriceByProductIds(productIdList);
+
+            req.setAttribute("cartDetails", cartDetails);
+            req.setAttribute("productPrices", productPrices);
+            req.getRequestDispatcher("checkout.jsp").forward(req, resp);
+        } catch (Exception e) {
+            req.getRequestDispatcher("notFound.jsp").forward(req, resp);
         }
 
-        resp.sendRedirect("checkout.jsp");
     }
 }
