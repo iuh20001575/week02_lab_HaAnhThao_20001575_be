@@ -32,7 +32,7 @@
 <body>
     <main class="d-flex gap-4 flex-column">
         <jsp:include page="components/header.jsp" />
-        <section class="container-fluid">
+        <section class="container">
             <div class="row">
                 <div class="col col-4">
                     <div class="ratio ratio-4x3 h-full">

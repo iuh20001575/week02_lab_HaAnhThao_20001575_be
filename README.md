@@ -114,3 +114,11 @@ The Back-End API is developed using the following technologies:
 For more detailed implementation and usage, refer to the source code and relevant documentation.
 
 Feel free to reach out for further assistance or clarifications regarding the API implementation.
+
+# Front-end
+## Home Page
+![Alt text](https://thaoanhhaa1.github.io/www_images/Lab02_HomePage.jpeg "Home page")
+## Product Detail Page
+![Alt text](https://thaoanhhaa1.github.io/www_images/Lab02_ProductDetailPage.jpeg "Product detail page")
+## Cart Page
+![Alt text](https://thaoanhhaa1.github.io/www_images/Lab02_CartPage.jpeg "Cart page")
