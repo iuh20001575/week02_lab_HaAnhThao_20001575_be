@@ -93,4 +93,16 @@ public class CartDetailRepository extends CRUDRepository<CartDetail> {
 
         return false;
     }
+
+    public List<CartDetail> getByProductIds(List<Long> productIds) {
+        try {
+            return em.createNamedQuery("CartDetail.getByProductIds", CartDetail.class)
+                    .setParameter("productIds", productIds)
+                    .getResultList();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+
+        return new ArrayList<>();
+    }
 }

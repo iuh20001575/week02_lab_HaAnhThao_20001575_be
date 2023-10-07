@@ -5,11 +5,16 @@ const price = document.querySelector('span.price');
 const totalPrices = document.querySelectorAll('.total-price');
 const prices = document.querySelectorAll('td.price');
 const qtyInputs = document.querySelectorAll('.qty-input');
+const buyBtn = document.querySelector('.buy-btn');
+const removeCartDetailBtns = document.querySelectorAll('.remove-detail');
 
 const handleClickCheckbox = () => {
     const selectedAll = document.querySelectorAll('.select-item:checked');
     const count = selectedAll.length;
     let prices = 0;
+
+    if (count) buyBtn.removeAttribute('disabled');
+    else buyBtn.setAttribute('disabled', 'disabled');
 
     selectedAll.forEach((selected) => {
         const price =
@@ -103,4 +108,34 @@ const handleChangeQty = async (btn, index) => {
 
 qtyInputs.forEach((qtyInput, index) => {
     qtyInput.addEventListener('change', () => handleChangeQty(qtyInput, index));
+});
+
+removeCartDetailBtns.forEach((btn) => {
+    btn.addEventListener('click', async () => {
+        const { custId, prodId } = btn.dataset;
+
+        try {
+            await fetch('api/cart-details', {
+                method: 'delete',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    product: {
+                        product_id: prodId,
+                    },
+                    cart: {
+                        customer: {
+                            id: custId,
+                        },
+                    },
+                }),
+            });
+
+            window.location.reload();
+        } catch (e) {
+            console.error(e);
+        }
+    });
 });

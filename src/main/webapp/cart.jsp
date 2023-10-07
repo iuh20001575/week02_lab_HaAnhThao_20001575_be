@@ -1,8 +1,5 @@
 <%@ page import="java.util.List" %>
-<%@ page import="vn.edu.iuh.fit.backend.models.CartDetail" %>
-<%@ page import="vn.edu.iuh.fit.backend.models.Product" %>
-<%@ page import="vn.edu.iuh.fit.backend.models.ProductImage" %>
-<%@ page import="vn.edu.iuh.fit.backend.models.ProductPrice" %>
+<%@ page import="vn.edu.iuh.fit.backend.models.*" %>
 <%
     Object cartDetailsO = session.getAttribute("cartDetails");
 
@@ -15,6 +12,7 @@
 
     List<CartDetail> cartDetails = (List<CartDetail>) cartDetailsO;
     List<ProductPrice> productPrices = (List<ProductPrice>) session.getAttribute("productPrices");
+    Customer customer = (Customer) session.getAttribute("customer");
     int cartSize = cartDetails.size();
 %>
 <%@ page contentType="text/html;charset=UTF-8" %>
@@ -29,73 +27,71 @@
     <main>
         <jsp:include page="components/header.jsp" />
         <section class="container">
-            <table class="table table-hover mt-3">
-                <thead>
-                    <tr>
-                        <th scope="col"></th>
-                        <th scope="col">Product</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Total amount</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% for (int  i = 0; i < cartSize; ++i) {
-                        CartDetail cartDetail = cartDetails.get(i);
-                        Product product = cartDetail.getProduct();
-                        List<ProductImage> productImageList = product.getProductImageList();
-                        String imagePath = productImageList == null || productImageList.isEmpty() ? "images/alternate_image.png" : productImageList.get(0).getPath();
-                    %>
+            <form action="control-servlet?action=checkout" method="post">
+                <input type="hidden" name="cust_id" value="<%= customer.getId() %>">
+                <table class="table table-hover mt-3">
+                    <thead>
                         <tr>
-                            <th class="align-middle">
-                                <input class="form-check-input mt-0 select-item" type="checkbox" value="">
-                            </th>
-                            <td>
-                                <div class="d-flex gap-1 align-items-center">
-                                    <img class="product-image" src="<%= imagePath %>" alt="<%= product.getName() %>">
-                                    <p class="m-0"><%= product.getName() %></p>
-                                </div>
-                            </td>
-                            <td class="align-middle price"><%= String.format("%.2f", productPrices.get(i).getPrice()) %></td>
-                            <td class="align-middle">
-                                <div class="input-group mb-3 m-0 align-items-center" data-product-id="<%= product.getProduct_id() %>" data-cart-id="<%= cartDetail.getCart().getCustomer().getId() %>">
-                                    <span class="input-group-text minus pointer-event user-select-none">-</span>
-                                    <input type="number" min="1" class="form-control qty-input" value="<%= cartDetail.getQuantity() %>">
-                                    <span class="input-group-text plus pointer-event user-select-none">+</span>
-                                </div>
-                            </td>
-                            <td class="align-middle total-price"><%= String.format("%.2f", productPrices.get(i).getPrice() * cartDetail.getQuantity()) %></td>
-                            <td class="align-middle">
-                                <form action="control-servlet?action=delete-cart-detail" method="post">
-                                    <input hidden="hidden" type="text" name="cart_id" value="<%= cartDetail.getCart().getCustomer().getId() %>">
-                                    <input hidden="hidden" type="text" name="product_id" value="<%= product.getProduct_id() %>">
-                                    <button type="submit" class="btn btn-danger">Remove</button>
-                                </form>
-                            </td>
+                            <th scope="col"></th>
+                            <th scope="col">Product</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Total amount</th>
+                            <th scope="col">Actions</th>
                         </tr>
-                    <% } %>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <% for (int  i = 0; i < cartSize; ++i) {
+                            CartDetail cartDetail = cartDetails.get(i);
+                            Product product = cartDetail.getProduct();
+                            List<ProductImage> productImageList = product.getProductImageList();
+                            String imagePath = productImageList == null || productImageList.isEmpty() ? "images/alternate_image.png" : productImageList.get(0).getPath();
+                        %>
+                            <tr>
+                                <th class="align-middle">
+                                    <input class="form-check-input mt-0 select-item" type="checkbox" name="product_id[]" value="<%= product.getProduct_id() %>">
+                                </th>
+                                <td>
+                                    <div class="d-flex gap-1 align-items-center">
+                                        <img class="product-image" src="<%= imagePath %>" alt="<%= product.getName() %>">
+                                        <p class="m-0"><%= product.getName() %></p>
+                                    </div>
+                                </td>
+                                <td class="align-middle price"><%= String.format("%.2f", productPrices.get(i).getPrice()) %></td>
+                                <td class="align-middle">
+                                    <div class="input-group mb-3 m-0 align-items-center" data-product-id="<%= product.getProduct_id() %>" data-cart-id="<%= cartDetail.getCart().getCustomer().getId() %>">
+                                        <span class="input-group-text minus pointer-event user-select-none">-</span>
+                                        <input type="number" min="1" class="form-control qty-input" name="qty[]" value="<%= cartDetail.getQuantity() %>">
+                                        <span class="input-group-text plus pointer-event user-select-none">+</span>
+                                    </div>
+                                </td>
+                                <td class="align-middle total-price"><%= String.format("%.2f", productPrices.get(i).getPrice() * cartDetail.getQuantity()) %></td>
+                                <td class="align-middle">
+                                    <button data-cust-id="<%= customer.getId() %>" data-prod-id="<%= product.getProduct_id() %>" type="button" class="btn btn-danger remove-detail">Remove</button>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
 
-            <div class="position-fixed bg-white bottom-0 start-0 end-0 border-top border-primary border-3">
-                <div class="d-flex flex-1">
-                <div class="container p-3 d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center gap-4">
-                        <label class="d-flex align-items-center">
-                            <input class="form-check-input mt-0 select-all" type="checkbox" value="">
-                            <span class="ms-2">Select all (<%= cartSize %>)</span>
-                        </label>
-                    </div>
-                    <div class="d-flex gap-4 align-items-center">
-                        <p class="d-flex align-items-center m-0">
-                            Total Payment (<span class="product-count">0</span>&nbsp; Products):
-                            <span class="ms-2 fs-3 text-danger price">0</span>
-                        </p>
-                        <button type="button" class="btn btn-primary">Buy</button>
+                <div class="position-fixed bg-white bottom-0 start-0 end-0 border-top border-primary border-3">
+                    <div class="container p-3 d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-4">
+                            <label class="d-flex align-items-center">
+                                <input class="form-check-input mt-0 select-all" type="checkbox" value="">
+                                <span class="ms-2">Select all (<%= cartSize %>)</span>
+                            </label>
+                        </div>
+                        <div class="d-flex gap-4 align-items-center">
+                            <p class="d-flex align-items-center m-0">
+                                Total Payment (<span class="product-count">0</span>&nbsp; Products):
+                                <span class="ms-2 fs-3 text-danger price">0</span>
+                            </p>
+                            <button type="submit" class="btn btn-primary buy-btn" disabled>Buy</button>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </section>
     </main>
 

@@ -6,8 +6,6 @@
 <%
     Object product_o = session.getAttribute("product");
 
-    System.out.println(product_o);
-
     String id = request.getParameter("id");
 
     if (product_o == null) {

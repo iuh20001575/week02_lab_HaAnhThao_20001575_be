@@ -32,6 +32,17 @@ public class CartDetailResources {
         return Response.ok(cartDetails).build();
     }
 
+    @GET
+    @Produces("application/json")
+    @Consumes("application/json")
+    public Response getByProductIds(@QueryParam("product-ids") List<Long> productIds) {
+        List<CartDetail> cartDetails = cartDetailServices.getByProductIds(productIds);
+
+        System.out.println(cartDetails);
+
+        return Response.ok().build();
+    }
+
     @POST
     @Produces("application/json")
     public Response add(CartDetail cartDetail) {

@@ -79,7 +79,9 @@ public class ControlServlet extends HttpServlet {
             }
             List<ProductPrice> productPrices = productPriceModel.getActiveProductsWithNewPriceByProductIds(list);
 
+            long cartCount = cartDetailModel.countByCustomer(customer.getId());
 
+            session.setAttribute("cartCount", cartCount);
             session.setAttribute("cartDetails", cartDetails);
             session.setAttribute("productPrices", productPrices);
             resp.sendRedirect("cart.jsp");
@@ -143,6 +145,8 @@ public class ControlServlet extends HttpServlet {
         }
         else if (action.equalsIgnoreCase("add-cart-detail"))
             handlePostAddCartDetail(req, resp);
+        else if (action.equalsIgnoreCase("checkout"))
+            handlePostCheckout(req, resp);
 
     }
 
@@ -219,5 +223,15 @@ public class ControlServlet extends HttpServlet {
                 resp.sendRedirect(getServletContext().getContextPath() + "/?page=1");
         }
 
+    }
+
+    private void handlePostCheckout(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String[] productIds = req.getParameterValues("product_id[]");
+
+        for (int i = 0; i < productIds.length; ++i) {
+            System.out.println(productIds[i]);
+        }
+
+        resp.sendRedirect("checkout.jsp");
     }
 }
