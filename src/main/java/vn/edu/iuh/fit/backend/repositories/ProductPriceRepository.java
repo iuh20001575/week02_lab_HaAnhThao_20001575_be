@@ -5,9 +5,9 @@ import vn.edu.iuh.fit.backend.enums.ProductStatus;
 import vn.edu.iuh.fit.backend.models.ProductPrice;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ProductPriceRepository extends CRUDRepository<ProductPrice> {
 
@@ -97,5 +97,23 @@ public class ProductPriceRepository extends CRUDRepository<ProductPrice> {
         }
 
         return new ArrayList<>();
+    }
+
+    public Map<LocalDateTime, Double> getDateAndPriceByProductId(long productId) {
+        try {
+            return (Map<LocalDateTime, Double>) em.createNamedQuery("ProductPrice.getDateAndPriceByProductId")
+                    .setParameter("productId", productId)
+                    .getResultList()
+                    .parallelStream()
+                    .collect(Collectors.toMap((Object[] objects) -> {
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+                        return LocalDateTime.parse(objects[0].toString(), formatter);
+                    }, (Object[] objects) -> ((Number) objects[1]).doubleValue(), Double::sum, TreeMap::new));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+
+        return new TreeMap<>();
     }
 }

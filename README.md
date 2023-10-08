@@ -122,3 +122,5 @@ Feel free to reach out for further assistance or clarifications regarding the AP
 ![Alt text](https://thaoanhhaa1.github.io/www_images/Lab02_ProductDetailPage.jpeg "Product detail page")
 ## Cart Page
 ![Alt text](https://thaoanhhaa1.github.io/www_images/Lab02_CartPage.jpeg "Cart page")
+## Price Chart By Time Page
+![Alt text](https://thaoanhhaa1.github.io/www_images/Lab02_PriceChartByTimePage.jpeg "Price chart by time")

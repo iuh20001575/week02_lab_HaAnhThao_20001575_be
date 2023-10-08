@@ -4,9 +4,8 @@ import org.slf4j.LoggerFactory;
 import vn.edu.iuh.fit.backend.enums.ProductStatus;
 import vn.edu.iuh.fit.backend.models.Product;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ProductRepository extends CRUDRepository<Product> {
     public ProductRepository() {
@@ -52,5 +51,24 @@ public class ProductRepository extends CRUDRepository<Product> {
         }
 
         return false;
+    }
+
+    public Map<Long, String> getProductIdAndNameInProductPrice() {
+        try {
+            return (Map<Long, String>) em.createNamedQuery("Product.getProductIdAndNameInProductPrice")
+                    .getResultList()
+                    .parallelStream()
+                    .collect(Collectors.toMap(
+                            (Object[] objects) -> ((Number) objects[0]).longValue(),
+                            (Object[] objects) -> (String) objects[1],
+                            (n1, n2) -> n2,
+                            TreeMap::new
+                    ));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+
+        return new TreeMap<>();
     }
 }

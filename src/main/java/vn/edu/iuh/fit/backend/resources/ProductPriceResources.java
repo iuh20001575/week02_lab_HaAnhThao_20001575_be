@@ -1,13 +1,17 @@
 package vn.edu.iuh.fit.backend.resources;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import vn.edu.iuh.fit.backend.services.ProductPriceServices;
 import vn.edu.iuh.fit.backend.models.ProductPrice;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Path("/product-prices")
@@ -84,5 +88,16 @@ public class ProductPriceResources {
 
 
         return Response.ok().build();
+    }
+
+    @GET
+    @Path("/prices")
+    @Produces("application/json")
+    public Response getDateAndPriceByProductId(@QueryParam("prod-id") long producId) throws JsonProcessingException {
+        Map<LocalDateTime, Double> map = productPriceServices.getDateAndPriceByProductId(producId);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        return Response.ok(mapper.writeValueAsString(map)).build();
     }
 }

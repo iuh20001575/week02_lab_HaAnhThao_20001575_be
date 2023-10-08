@@ -12,10 +12,7 @@ import vn.edu.iuh.fit.frontend.utils.Utils;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/control-servlet"})
@@ -46,6 +43,8 @@ public class ControlServlet extends HttpServlet {
             handleGetProduct(req, resp);
         else if (action.equalsIgnoreCase("cart"))
             handleGetCart(req, resp);
+        else if (action.equalsIgnoreCase("price-chart-by-time"))
+            handleGetPriceChartByTime(req, resp);
     }
 
     private Optional<Customer> getCustomerFromSession(HttpServletRequest req) {
@@ -131,6 +130,35 @@ public class ControlServlet extends HttpServlet {
             session.setAttribute("product", productPrice.get());
 
             resp.sendRedirect("product.jsp?id=" + id);
+        }
+    }
+
+    private void handleGetPriceChartByTime(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Object productsO = req.getAttribute("products");
+        Map<Long, String> map;
+        long prodId;
+
+        try {
+            if (productsO == null)
+                map = productModel.getProductIdAndNameInProductPrice();
+            else
+                map = (Map<Long, String>) productsO;
+
+            String prodIdS = req.getParameter("prod-id");
+
+            if (prodIdS == null)
+                prodId = 1;
+            else
+                prodId = Long.parseLong(prodIdS);
+
+            Map<LocalDateTime, Double> prices = productPriceModel.getDateAndPriceByProductId(prodId);
+
+            req.setAttribute("prices", prices);
+            req.setAttribute("products", map);
+            req.getRequestDispatcher("priceChartByTime.jsp").forward(req, resp);
+        } catch (Exception e) {
+            e.printStackTrace();
+            req.getRequestDispatcher("notFound.jsp").forward(req, resp);
         }
     }
 

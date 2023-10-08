@@ -5,6 +5,7 @@ import vn.edu.iuh.fit.backend.repositories.ProductPriceRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class ProductPriceServices {
@@ -49,5 +50,9 @@ public class ProductPriceServices {
 
     public List<ProductPrice> getActiveProductsWithNewPriceByProductIds(List<Long> productIds) {
         return productPriceRepository.getActiveProductsWithNewPriceByProductIds(productIds);
+    }
+
+    public Map<LocalDateTime, Double> getDateAndPriceByProductId(long productId) {
+        return productPriceRepository.getDateAndPriceByProductId(productId);
     }
 }

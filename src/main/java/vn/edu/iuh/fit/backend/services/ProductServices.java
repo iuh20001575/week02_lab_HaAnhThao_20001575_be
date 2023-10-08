@@ -6,11 +6,15 @@ import vn.edu.iuh.fit.backend.models.Product;
 import vn.edu.iuh.fit.backend.repositories.ProductRepository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class ProductServices {
-    @Inject
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+
+    public ProductServices() {
+        this.productRepository = new ProductRepository();
+    }
 
     public List<Product> getAll(int page) {
         return productRepository.getAll(Math.max(page, 1));
@@ -40,5 +44,9 @@ public class ProductServices {
             return Optional.empty();
 
         return Optional.of(productRepository.updateStatus(id, ProductStatus.DISCONTINUED));
+    }
+
+    public Map<Long, String> getProductIdAndNameInProductPrice() {
+        return productRepository.getProductIdAndNameInProductPrice();
     }
 }

@@ -14,7 +14,8 @@ import java.util.List;
 @Table(name = "product")
 @NamedQueries({
         @NamedQuery(name = "Product.getAll", query = "FROM Product ORDER BY id"),
-        @NamedQuery(name = "Product.updateStatus", query = "UPDATE Product SET status = :status WHERE product_id = :product_id")
+        @NamedQuery(name = "Product.updateStatus", query = "UPDATE Product SET status = :status WHERE product_id = :product_id"),
+        @NamedQuery(name = "Product.getProductIdAndNameInProductPrice", query = "SELECT p.id, p.name FROM Product p WHERE p.id IN (SELECT DISTINCT pp.product.id FROM ProductPrice pp)")
 })
 @XmlRootElement
 public class Product {

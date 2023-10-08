@@ -1,5 +1,7 @@
 package vn.edu.iuh.fit.backend.resources;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
@@ -8,6 +10,7 @@ import vn.edu.iuh.fit.backend.services.ProductServices;
 import vn.edu.iuh.fit.backend.models.Product;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Path("/products")
@@ -16,6 +19,7 @@ public class ProductResources {
     private ProductServices productServices;
     @Inject
     private ProductImageServices productImageServices;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @GET
     @Produces("application/json")
@@ -42,6 +46,15 @@ public class ProductResources {
     @Produces("application/json")
     public Response getImageByProductId(@PathParam("id") long id) {
         return Response.ok(productImageServices.getByProductId(id)).build();
+    }
+
+    @GET
+    @Path("/product-price")
+    @Produces("application/json")
+    public Response getProductIdAndNameInProductPrice() throws JsonProcessingException {
+        Map<Long, String> map = productServices.getProductIdAndNameInProductPrice();
+
+        return Response.ok(mapper.writeValueAsString(map)).build();
     }
 
     @POST
